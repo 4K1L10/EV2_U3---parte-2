@@ -1,0 +1,74 @@
+﻿@using System.Security.Claims;
+
+
+@{
+    ViewData["Title"] = "Página de Inicio";
+}
+
+@if (User.Identity!.IsAuthenticated)
+{
+    <div class="text-center">
+        <h1 class="display-4">Bienvenido al sistema Soporte Hardware/Software y S.O      
+        </h1>
+    </div>
+
+
+    <form>
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" placeholder="Nombre" value="@User.Claims.Where(c =>
+            c.Type == ClaimTypes.Name).Select(c =>
+                c.Value).SingleOrDefault()" disabled>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" placeholder="Correo" value="@User.Claims.Where(c =>
+                c.Type == ClaimTypes.Email).Select(c =>
+            c.Value).SingleOrDefault()" disabled>
+            </div>
+        </div>
+    </form>
+
+    <hr />
+
+    <div class="text-center">
+        <h1 class="display-4">Datos de Ficha Técnica</h1>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre Completo del Cliente</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Finalización</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Estado</th>
+                <th>Tipo PC</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var recepcion in Model)
+            {
+                foreach (var ficha in recepcion.Datosfichatecnicas)
+                {
+                    <tr>
+                        <td>@recepcion.IdClienteNavigation.Nombre @recepcion.IdClienteNavigation.Apellido</td>
+                        <td>@ficha.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                        <td>@ficha.FechaFinalizacion?.ToString("dd/MM/yyyy")</td>
+                        <td>@recepcion.MarcaPc</td>
+                        <td>@recepcion.ModeloPc</td>
+                        <td>@recepcion.Estado</td>
+                        <td>@recepcion.TipoPc</td>
+                        <td>
+                            <a asp-controller="Datosfichatecnicas" asp-action="FichaTecnica" asp-route-id="@ficha.IdDatosFichaTecnica" class="btn btn-primary">
+                                Ver Ficha
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
